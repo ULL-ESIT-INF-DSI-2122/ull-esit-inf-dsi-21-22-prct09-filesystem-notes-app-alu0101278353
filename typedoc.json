@@ -1,0 +1,12 @@
+{
+  "entryPoints": [
+      "./src/imperialLength.ts",
+      "./src/metrithLength.ts",
+      "./src/factoryMethod/agua",
+      "./src/factoryMethod/fuego",
+      "./src/factoryMethod/interfacePokemon",
+      "./src/factoryMethod/pokemonAguaCreator",
+      "./src/factoryMethod/pokemonFuegoCreator"
+  ],
+  "out": "../docs"
+}

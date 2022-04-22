@@ -1,0 +1,1 @@
+{"processes":{"0401b9dd-fa79-48d0-b3d4-ec4cafd6c2e0":{"parent":null,"children":["aa6388c2-6980-4c62-a9f4-6e2c05b8e24a"]},"aa6388c2-6980-4c62-a9f4-6e2c05b8e24a":{"parent":"0401b9dd-fa79-48d0-b3d4-ec4cafd6c2e0","children":[]}},"files":{"/home/usuario/modi8/src/basicFunction.ts":["aa6388c2-6980-4c62-a9f4-6e2c05b8e24a"]},"externalIds":{}}
