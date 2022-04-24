@@ -4,10 +4,33 @@ const fs = require("fs");
 const yargs = require("yargs");
 const User_1 = require("./User");
 const Note_1 = require("./Note");
-const listUsers_1 = require("./listUsers");
-// import { CollectionNotesUser } from './CollectionNotes';
+/**
+ * Path para guardar las notas
+ */
 const pathFile = '/home/usuario/p9/src/notesUser/';
-const users = new listUsers_1.ListUsers();
+/**
+ * lista de usuarios
+ */
+let users = [];
+/**
+ * Lee los usuarios y sus notas para crear la lista de usuarios
+ */
+const setUsers = () => {
+    const file = fs.readdirSync(pathFile);
+    file.map((user) => {
+        const newUser = new User_1.User(user);
+        const notes = fs.readdirSync(pathFile + user);
+        notes.map((note) => {
+            const newNote = fs.readFileSync(pathFile + user + '/' + note, { encoding: 'utf8', flag: 'r' });
+            newUser.setNote(JSON.parse(newNote));
+        });
+        users = [...users, newUser];
+    });
+};
+setUsers();
+/**
+ * Agrega una nota
+ */
 yargs.command({
     command: 'add',
     describe: 'Add a new note',
@@ -42,6 +65,7 @@ yargs.command({
                 fs.mkdirSync(dir);
                 fs.writeFileSync(`${dir}/${argv.title}.json`, JSON.stringify(note, null, 2));
                 newUsu.setNote(note);
+                users = [...users, newUsu];
                 console.log('Nota agregada');
             }
             else {
@@ -54,13 +78,12 @@ yargs.command({
                     console.log('Tienes una nota con ese nombre');
                 }
             }
-            users.addUser(newUsu);
         }
     },
 });
-/**
- * Elimina nota de la lista
- */
+// /**
+//  * Elimina nota de la lista
+//  */
 yargs.command({
     command: 'remove',
     describe: 'Delete a note',
@@ -78,12 +101,19 @@ yargs.command({
     },
     handler(argv) {
         if (typeof argv.title === 'string' && typeof argv.user === 'string') {
-            // let user = users.find((user) => user.getName() === argv.user);
-            if (users.userExist(argv.user)) {
+            // let usuario = users.find((user) => user.getName() === argv.user);
+            let title = argv.title;
+            if (users.find((user) => user.getName() === argv.user)) {
                 let dir = `${pathFile}${argv.user}`;
                 if (fs.existsSync(`${dir}/${argv.title}.json`)) {
                     fs.unlinkSync(`${dir}/${argv.title}.json`);
-                    users.removeNoteUser(argv.user, argv.title);
+                    users.forEach((user) => {
+                        if (user.getName() === argv.user) {
+                            if (user.searchNote(title)) {
+                                user.removeNote(title);
+                            }
+                        }
+                    });
                     console.log('nota eliminada');
                 }
                 else {
@@ -94,44 +124,34 @@ yargs.command({
                 console.log('nombre de usuario incorrecto');
             }
         }
-        // let dir = `${pathFile}${argv.user}`;
-        // if (fs.existsSync(`${dir}/${argv.title}.json`)) {
-        //   user?.removeNote(argv.title); // undefined
-        //   fs.unlinkSync(`${dir}/${argv.title}.json`);
-        //   console.log('nota eliminada');
-        //   } else {
-        //     console.log('no se puede eliminar la nota');
-        //   }
     },
 });
-// /**
-//  * Edita nota que tiene el usuario
-//  */
-//  yargs.command({
-//   command: 'edit',
-//   describe: 'Edit a note',
-//   builder: {
-//     user: {
-//       describe: 'Name User',
-//       demandOption: true,
-//       type: 'string',
-//     },
-//     title: {
-//       describe: 'Note title',
-//       demandOption: true,
-//       type: 'string',
-//     },
-//     changeBody: {
-//       describe: 'Change Body',
-//       demandOption: true,
-//       type: 'string',
-//     },
-//   },
-//   handler(argv) {
-//     if (typeof argv.title === 'string' && typeof argv.user === 'string' && typeof argv.changeBody === 'string') {
-//     }
-//   },
-// });
+/**
+ * Lista las nota que tiene el usuario
+ */
+yargs.command({
+    command: 'list',
+    describe: 'List a note',
+    builder: {
+        user: {
+            describe: 'Name User',
+            demandOption: true,
+            type: 'string',
+        },
+    },
+    handler(argv) {
+        if (typeof argv.title === 'string') {
+            let notes = [];
+            if (users.find((user) => user.getName() === argv.user)) {
+                users.map((user) => {
+                    notes = user.getNotes();
+                    notes.forEach((note) => {
+                        console.log(note.getTitle());
+                    });
+                });
+            }
+        }
+    },
+});
 yargs.parse();
-console.log(users.getList());
 //# sourceMappingURL=note-app.js.map

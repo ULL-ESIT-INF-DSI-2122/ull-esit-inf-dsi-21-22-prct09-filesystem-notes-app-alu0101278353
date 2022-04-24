@@ -8,6 +8,11 @@ class ListUsers {
     addUser(user) {
         this.listUsers.push(user);
     }
+    /**
+     * Comprueba que exista el usuario
+     * @param usu usuario a buscar
+     * @returns un valor boleano
+     */
     userExist(usu) {
         let value = true;
         if (this.listUsers.find((user) => user.getName() === usu)) {
@@ -17,18 +22,6 @@ class ListUsers {
             value = false;
         }
         return value;
-    }
-    removeNoteUser(usu, title) {
-        if (this.userExist(usu)) {
-            this.listUsers.forEach((user) => {
-                if (user.getName() === usu) {
-                    user.removeNote(title);
-                }
-            });
-        }
-    }
-    getList() {
-        return this.listUsers;
     }
 }
 exports.ListUsers = ListUsers;

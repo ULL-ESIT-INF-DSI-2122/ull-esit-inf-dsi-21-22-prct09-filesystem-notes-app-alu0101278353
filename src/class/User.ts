@@ -21,11 +21,19 @@ export class User {
   public setName(newName: string): void {
     this.name = newName;
   }
+  /**
+   * Getter para 'name'
+   * @returns nombre del usuario
+   */
   public getName(): string {
     return this.name;
   }
+  /**
+   * Agrega una nota
+   * @param note nota a agregar
+   */
   public setNote(note: Note): void {
-    this.list.push(note);
+    this.list = [...this.list, note];
   }
   /**
    * Elimina una nota
@@ -34,6 +42,7 @@ export class User {
   public removeNote(titleNota: string): void {
     this.list = this.list.filter((n) => n.getTitle() !== titleNota);
   }
+
   /**
    * Getter para 'list' de notas
    * @returns devuelve la lista de notas
