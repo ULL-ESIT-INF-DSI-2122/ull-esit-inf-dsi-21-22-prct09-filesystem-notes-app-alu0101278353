@@ -4,6 +4,7 @@ const fs = require("fs");
 const yargs = require("yargs");
 const User_1 = require("./User");
 const Note_1 = require("./Note");
+const chalk = require("chalk");
 /**
  * Path para guardar las notas
  */
@@ -21,6 +22,7 @@ const setUsers = () => {
         const newUser = new User_1.User(user);
         const notes = fs.readdirSync(pathFile + user);
         notes.map((note) => {
+            // console.log(note);
             const newNote = fs.readFileSync(pathFile + user + '/' + note, { encoding: 'utf8', flag: 'r' });
             newUser.setNote(JSON.parse(newNote));
         });
@@ -101,20 +103,12 @@ yargs.command({
     },
     handler(argv) {
         if (typeof argv.title === 'string' && typeof argv.user === 'string') {
-            // let usuario = users.find((user) => user.getName() === argv.user);
             let thisUser = users.find((user) => user.getName() === argv.user);
             let title = argv.title;
             if (!users.find((user) => user.getName() === argv.user)) {
                 let dir = `${pathFile}${argv.user}`;
                 if (fs.existsSync(`${dir}/${argv.title}.json`)) {
                     fs.unlinkSync(`${dir}/${argv.title}.json`);
-                    // users.forEach((user) => {
-                    //   if (user.getName() === argv.user) {
-                    //     if (user.searchNote(title)) {
-                    //       user.removeNote(title);
-                    //     }
-                    //   }
-                    // });
                     if (thisUser !== undefined) {
                         if (thisUser.searchNote(title)) {
                             thisUser.removeNote(title);
@@ -157,6 +151,46 @@ yargs.command({
                         let values = Object.values(note).at(0);
                         console.log(values);
                     });
+                }
+            }
+            else {
+                console.log('nombre de usuario incorrecto');
+            }
+        }
+    },
+});
+/**
+ * Lee el contenido de la nota del usuario
+ */
+yargs.command({
+    command: 'read',
+    describe: 'Read the content of the note',
+    builder: {
+        user: {
+            describe: 'Name User',
+            demandOption: true,
+            type: 'string',
+        },
+        title: {
+            describe: 'Note title',
+            demandOption: true,
+            type: 'string',
+        },
+    },
+    handler(argv) {
+        if (typeof argv.user === 'string' && typeof argv.title === 'string') {
+            setUsers();
+            if (users.find((user) => user.getName() === argv.user)) {
+                if (fs.existsSync(`${pathFile}${argv.user}/${argv.title}.json`)) {
+                    let thisUser = users.find((user) => user.getName() === argv.user);
+                    if (thisUser !== undefined) {
+                        const note = fs.readFileSync(`${pathFile}${argv.user}/${argv.title}.json`, { encoding: 'utf8', flag: 'r' });
+                        const objecNote = JSON.parse(note);
+                        console.log(`Contenido: ${objecNote.bodyText}\nColor: ${(objecNote.color === 'green') ? chalk.green(objecNote.color) : chalk.red(objecNote.color)}`);
+                    }
+                }
+                else {
+                    console.log('La nota no existe o ha escrito mal el nombre');
                 }
             }
             else {
