@@ -7,7 +7,7 @@ const Note_1 = require("./Note");
 /**
  * Path para guardar las notas
  */
-const pathFile = '/home/usuario/p9/src/notesUser/';
+const pathFile = '/home/usuario/p9/src/Notes/';
 /**
  * lista de usuarios
  */
@@ -25,9 +25,9 @@ const setUsers = () => {
             newUser.setNote(JSON.parse(newNote));
         });
         users = [...users, newUser];
+        // console.log(users);
     });
 };
-setUsers();
 /**
  * Agrega una nota
  */
@@ -102,19 +102,25 @@ yargs.command({
     handler(argv) {
         if (typeof argv.title === 'string' && typeof argv.user === 'string') {
             // let usuario = users.find((user) => user.getName() === argv.user);
+            let thisUser = users.find((user) => user.getName() === argv.user);
             let title = argv.title;
-            if (users.find((user) => user.getName() === argv.user)) {
+            if (!users.find((user) => user.getName() === argv.user)) {
                 let dir = `${pathFile}${argv.user}`;
                 if (fs.existsSync(`${dir}/${argv.title}.json`)) {
                     fs.unlinkSync(`${dir}/${argv.title}.json`);
-                    users.forEach((user) => {
-                        if (user.getName() === argv.user) {
-                            if (user.searchNote(title)) {
-                                user.removeNote(title);
-                            }
+                    // users.forEach((user) => {
+                    //   if (user.getName() === argv.user) {
+                    //     if (user.searchNote(title)) {
+                    //       user.removeNote(title);
+                    //     }
+                    //   }
+                    // });
+                    if (thisUser !== undefined) {
+                        if (thisUser.searchNote(title)) {
+                            thisUser.removeNote(title);
                         }
-                    });
-                    console.log('nota eliminada');
+                        console.log('nota eliminada');
+                    }
                 }
                 else {
                     console.log('Nombre de nota incorrecto');
@@ -140,15 +146,21 @@ yargs.command({
         },
     },
     handler(argv) {
-        if (typeof argv.title === 'string') {
+        if (typeof argv.user === 'string') {
+            setUsers();
             let notes = [];
             if (users.find((user) => user.getName() === argv.user)) {
-                users.map((user) => {
-                    notes = user.getNotes();
+                let thisUser = users.find((user) => user.getName() === argv.user);
+                if (thisUser !== undefined) {
+                    notes = thisUser.getNotes();
                     notes.forEach((note) => {
-                        console.log(note.getTitle());
+                        let values = Object.values(note).at(0);
+                        console.log(values);
                     });
-                });
+                }
+            }
+            else {
+                console.log('nombre de usuario incorrecto');
             }
         }
     },

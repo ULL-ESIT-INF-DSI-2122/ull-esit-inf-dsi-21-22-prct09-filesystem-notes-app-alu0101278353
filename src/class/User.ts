@@ -65,13 +65,13 @@ export class User {
     return value;
   }
 
-  // public printNotesUser(): string {
-  //   let out: string = '';
-  //   this.list.forEach((note) => {
-  //     out = `${note.getTitle()}`;
-  //   });
-  //   return out;
-  // }
+  public getTitleNote(): string {
+    let out: string = '';
+    this.list.forEach((note) => {
+      out = `${note.getTitle()}\n`;
+    });
+    return out;
+  }
   
   /**
    * Devuelve 'true' si encuentra la nota del usuario
@@ -101,7 +101,4 @@ export class User {
 // user.removeNote('puchi');
 // users.push(user);
 // users.push(user2);
-// for (let i = 0; i < users.length; i++) {
-//   let us = users[i].printNotesUser();
-//   console.log(us);
-// }
+// console.log( user instanceof User);

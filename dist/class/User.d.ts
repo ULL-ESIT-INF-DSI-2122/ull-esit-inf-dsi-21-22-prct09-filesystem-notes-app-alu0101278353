@@ -44,4 +44,5 @@ export declare class User {
      * @returns
      */
     searchNote(title: string): boolean;
+    getTitleNote(): string;
 }

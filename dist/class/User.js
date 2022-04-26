@@ -63,6 +63,13 @@ class User {
         }
         return value;
     }
+    getTitleNote() {
+        let out = '';
+        this.list.forEach((note) => {
+            out = `${note.getTitle()}\n`;
+        });
+        return out;
+    }
 }
 exports.User = User;
 // let users: User[] = [];
@@ -76,8 +83,5 @@ exports.User = User;
 // user.removeNote('puchi');
 // users.push(user);
 // users.push(user2);
-// for (let i = 0; i < users.length; i++) {
-//   let us = users[i].printNotesUser();
-//   console.log(us);
-// }
+// console.log( user instanceof User);
 //# sourceMappingURL=User.js.map
